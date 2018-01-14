@@ -1,0 +1,17 @@
+/** personality **/
+sex="male";
+
+/** movement **/
+speedPlayer=3;
+
+idle=true;
+facingDirection="down";
+
+/** animation(not required for movement) **/
+anim_increment=0;
+animationSpeed=20;
+walkingAnimationLen_up=0;
+walkingAnimationLen_down=0;
+walkingAnimationLen_left=0;
+walkingAnimationLen_right=0;
+walkingAnimationLen_max=9;
