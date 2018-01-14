@@ -1,0 +1,71 @@
+/*
+* script_keyboard_movement(movement_speed);
+* description // need to refine collisions more, current state shitty
+*/
+//initial variable setup
+var moveX=0;
+var moveY=0;
+var inputDown;
+var inputUp;
+var inputRight;
+var inputLeft;
+//running speed
+if(keyboard_check(vk_shift)){
+	speedPlayer*=1.5;
+}
+inputUp=keyboard_check(ord("W")) || keyboard_check(vk_up);
+inputDown=keyboard_check(ord("S")) || keyboard_check(vk_down);
+inputLeft=keyboard_check(ord("A")) || keyboard_check(vk_left);
+inputRight=keyboard_check(ord("D")) || keyboard_check(vk_right);
+//calculate moveX direction
+moveX=(inputRight-inputLeft);
+//block diagonal movement, only allow Y movement if there is no movement in X
+if(moveX==0){
+	//calculate moveY direction
+	moveY=(inputDown-inputUp);
+}
+//calculate moveX && moveY according to the speed
+	moveX=(speedPlayer*moveX);
+	moveY=(speedPlayer*moveY);
+/* apply collision check & set appropriate movement */
+//horizontal collision check && movement to the last free pixel on X 
+if(place_meeting(x+moveX,y,non_player_object_parent)){
+	idle=false;
+	repeat(abs(moveX)){
+		if(!place_meeting(x+sign(moveX),y,non_player_object_parent)) x=sign(moveX)+x;
+		else break;
+	}
+	//we have already moved as much as possible to the X, no need to move more
+	//because outside of this block again increments/decrements the x with moveX, so reset it to 0
+	moveX=0;
+}
+//vertical collision check && movement to the last free pixel on Y 
+if(place_meeting(x,y+moveY,non_player_object_parent)){
+	idle=false;
+	repeat(abs(moveY)){
+		if(!place_meeting(x,y+sign(moveY),non_player_object_parent)) y=sign(moveY)+y;
+		else break;
+	}
+	//we have already moved as much as possible to the Y, no need to move more
+	//because outside of this block again increments/decrements the y with moveY, so reset it to 0
+	moveY=0;
+}
+/* apply movement finally */
+x=x+moveX;
+y=y+moveY;
+/*
+	update the facing direction variable 
+	------------------------------------------------
+	if sign(moveX) is +ve facing direction is right
+	if sign(moveX) is -ve facing direction is left
+	if sign(moveY) is +ve facing direction is down
+	if sign(moveY) is -ve facing direction is up
+*/
+	if(moveX!=0 || moveY!=0) idle=false;
+	else idle=true;
+	if(moveY!=0 && !sign(moveY))	facingDirection="up";
+	if(moveY!=0 &&  sign(moveY))	facingDirection="down";
+	if(moveX!=0 && !sign(moveX))	facingDirection="left";
+	if(moveX!=0 &&  sign(moveX))	facingDirection="right";
+//reset the speed
+speedPlayer=5;
